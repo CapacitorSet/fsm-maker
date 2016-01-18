@@ -7,31 +7,21 @@
 #define BASSO(n)    0
 #define E |
 
-typedef uint32_t input_t;
+typedef uint32_t io_t;
 typedef int      stato_t;
 
 stato_t	stato;
-input_t	inputs;
+io_t	inputs;
 
-stato_t partenza[] = {
-/*PARTENZA*/
-	0
-};
+stato_t partenza[] = {/*PARTENZA*/};
 
-stato_t arrivo[] = {
-/*ARRIVO*/
-	0
-};
+stato_t arrivo[] = {/*ARRIVO*/};
 
-input_t condizioni[] = {
-/*CONDIZIONI*/
-	0
-};
+io_t condizioni[] = {/*CONDIZIONI*/};
 
-input_t attesi[] = {
-/*ATTESI*/
-	0
-};
+io_t attesi[] = {/*ATTESI*/};
+
+io_t outputs[] = {/*OUTPUTS*/};
 
 void init() {
 	stato = /*STATO_INIZIALE*/;
