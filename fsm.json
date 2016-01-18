@@ -10,6 +10,18 @@
 		"FC_due",
 		"FC_tre"
 	],
+	"antirimbalzo": {
+		"esponente": 2,
+		"schmitt": {
+			"basso": 0.3,
+			"alto": 0.7
+		},
+		"porte": [
+			"Pulsante_uno",
+			"Pulsante_due",
+			"Pulsante_tre"
+		]
+	},
 	"output": [
 		"Lampada"
 	],

@@ -56,13 +56,27 @@ var replacement = {
 		.map(d => d.toBitmask(dati.output))
 		.toString(),
 
+
+	STATI_RC: dati.input
+		.map(x => Math.floor(1/2 * Math.pow(2, 16))) // Le tensioni sono immagazzinate su una scala da 0 a 2^16
+		.toString(),
+	INGRESSI_DEBOUNCED: dati.input
+		.map(x => dati.antirimbalzo.porte.indexOf(x) != -1)
+		.map(Number)
+		.toString(),
+	COSTANTE_PER_RC: dati.antirimbalzo.esponente,
+	SOGLIA_BASSA: Math.pow(2, 16) * dati.antirimbalzo.schmitt.basso,
+	SOGLIA_ALTA: Math.pow(2, 16) * dati.antirimbalzo.schmitt.alto,
+
 	NUM_TRANSIZIONI: dati.transizioni.length,
+	NUM_INGRESSI: dati.input.length,
+
 	// Prendi lo stato iniziale, ottienine l'ID
 	STATO_INIZIALE: IDStato[dati.iniziali.stato],
 	// Prendi gli input iniziali, rimuovi quelli che iniziano per !, trasformali in bitmask
 	INPUTS_INIZIALI: dati.iniziali.input
 		.filter(d => !isNot(d))
-		.toBitmask(dati.input)
+		.toBitmask(dati.input),
 }
 
 // Prendi le chiavi, sostituisci /*KEY*/ con value
