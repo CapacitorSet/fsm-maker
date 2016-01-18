@@ -1,0 +1,15 @@
+# LaTeX files
+*.aux
+*.log
+*.pdf
+*.synctex.gz
+
+# Compiled C
+*.exe
+*.o
+
+# Compiled DOT
+*.svg
+
+# Compiled FSM
+fsm.c
