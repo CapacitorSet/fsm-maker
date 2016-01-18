@@ -12,6 +12,7 @@ typedef int      stato_t;
 
 stato_t	stato;
 io_t	inputs;
+io_t    outputs;
 
 stato_t partenza[] = {/*PARTENZA*/};
 
@@ -21,7 +22,7 @@ io_t condizioni[] = {/*CONDIZIONI*/};
 
 io_t attesi[] = {/*ATTESI*/};
 
-io_t outputs[] = {/*OUTPUTS*/};
+io_t uscite[] = {/*USCITE*/};
 
 void init() {
 	stato = /*STATO_INIZIALE*/;
@@ -32,6 +33,8 @@ void init() {
 int main() {
 	init();
 
+	printf("Stato iniziale: %i\n", stato);
+
 	for (int i = 0; i < NUM_TRANSIZIONI; i++) {
 		// stato non corrispondente? passa al prossimo
 		if (stato != partenza[i]) continue;
@@ -39,9 +42,10 @@ int main() {
 		if ((inputs & condizioni[i]) != attesi[i]) continue;
 		// se sei qua, lo stato e le condizioni corrispondono
 		stato = arrivo[i];
+		outputs = uscite[i];
 		break;
 	}
-	// Verify that the transition worked
-	printf("%i", stato);
+	// Verifica che la transizione e' avvenuta
+	printf("Stato finale: %i, output finali: %i\n", stato, outputs);
 	return 0;
 }

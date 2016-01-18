@@ -1,6 +1,7 @@
 {
 	"nome": "Ascensore",
 	"descrizione": "Ascensore a tre piani",
+	"tipo": "mealy",
 	"input": [
 		"Pulsante_uno",
 		"Pulsante_due",
@@ -8,6 +9,9 @@
 		"FC_uno",
 		"FC_due",
 		"FC_tre"
+	],
+	"output": [
+		"Lampada"
 	],
 	"stati": [
 		"2",
@@ -21,13 +25,13 @@
 		{"da":  "0", "a":  "2", "condizioni": ["FC_uno", "Pulsante_tre"]},
 		{"da":  "0", "a": "-1", "condizioni": ["FC_due", "Pulsante_uno"]},
 		{"da":  "0", "a":  "1", "condizioni": ["FC_due", "Pulsante_tre"]},
-		{"da":  "0", "a": "-2", "condizioni": ["FC_tre", "Pulsante_uno"]},
+		{"da":  "0", "a": "-2", "condizioni": ["FC_tre", "Pulsante_uno"], "uscite": ["Lampada"]},
 		{"da":  "0", "a": "-1", "condizioni": ["FC_tre", "Pulsante_due"]},
 
-		{"da":  "2", "a":  "1", "condizioni": ["FC_due"], "commento": "Quando arriva a meta' decrementa il numero"},
+		{"da":  "2", "a":  "1", "condizioni": ["FC_due"]},
 		{"da": "-2", "a": "-1", "condizioni": ["FC_due"]},
 
-		{"da":  "1", "a":  "0", "condizioni": ["FC_uno"], "commento": "Appena arrivato all'ultimo piano resetta il numero"},
+		{"da":  "1", "a":  "0", "condizioni": ["FC_uno"]},
 		{"da":  "1", "a":  "0", "condizioni": ["FC_due"]},
 		{"da":  "1", "a":  "0", "condizioni": ["FC_tre"]},
 

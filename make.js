@@ -2,6 +2,11 @@ var fs = require("fs"),
 	dati = JSON.parse(fs.readFileSync("fsm.json", "utf8")),
 	template = fs.readFileSync("template.c", "utf8");
 
+if (dati.tipo != "mealy") {
+	console.log('Devi specificare il tipo di FSM "mealy".');
+	return;
+}
+
 // Mappa ogni nome di stato a un numero incrementale
 var IDStato = {},
 	i = 0;
@@ -38,11 +43,17 @@ var replacement = {
 		))
 		.map(d => d.toBitmask(dati.input))
 		.toString(),
-	// Prendi i campi "attesi", togli quelli che iniziano per !, trasforma in bitmask, tabula
+	// Prendi i campi "condizioni", togli quelli che iniziano per !, trasforma in bitmask array e poi in stringa
 	ATTESI: dati.transizioni
 		.map(get("condizioni"))
 		.map(x => x.filter(d => !isNot(d)))
 		.map(d => d.toBitmask(dati.input))
+		.toString(),
+	USCITE: dati.transizioni
+		.map(get("uscite"))
+		.map(x => x == "" ? [] : x)
+		.map(x => x.filter(d => !isNot(d))) // Rimuovi le uscite che iniziano per !
+		.map(d => d.toBitmask(dati.output))
 		.toString(),
 
 	NUM_TRANSIZIONI: dati.transizioni.length,
