@@ -18,10 +18,10 @@
 	},
 	"input iniziali": ["FC_tre", "Pulsante_uno"],
 	"antirimbalzo": {
-		"esponente": 2,
+		"intervallo": 1,
 		"schmitt": {
-			"basso": "30",
-			"alto": "250"
+			"basso": 30,
+			"alto": 250
 		},
 		"porte": [
 			"Pulsante_uno",
