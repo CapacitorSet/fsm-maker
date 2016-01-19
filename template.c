@@ -20,7 +20,10 @@
 typedef uint32_t io_t;
 typedef int      stato_t;
 
-io_t    raw_inputs, inputs, outputs, bus, new_bus;
+io_t    raw_inputs, inputs, outputs;
+#if BUS_ENABLED
+	io_t bus, new_bus;
+#endif
 
 #define STATI /*STATI_INIZIALI*/
 
@@ -162,8 +165,10 @@ int main() {
 		// Verifica che la transizione e' avvenuta
 		printf("Stato finale della macchina %i: %i, output finali: %i\n", IDMacchina, stato_attuale, outputs);
 	}
+#if BUS_ENABLED
 	// Flusha il buffer in bus.
 	bus = new_bus;
+#endif
 
 // e finisce qua
 
