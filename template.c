@@ -8,10 +8,9 @@
 
 typedef uint32_t io_t;
 typedef int      stato_t;
-typedef uint16_t tensione_t;
 
 stato_t	stato;
-io_t	inputs, outputs, bus;
+io_t	raw_inputs, inputs, outputs, bus;
 
 // Gli stati di partenza
 stato_t partenza[] = {/*PARTENZA*/};
@@ -41,43 +40,52 @@ io_t bus_out_valori[] = {/*BUS_OUT_VALORI*/};
 
 // ---
 
-tensione_t stati_RC[] = {/*STATI_RC*/};
-
 uint8_t debounced[] = {/*INGRESSI_DEBOUNCED*/};
+
+uint8_t input_counts[] = {/*INPUT_COUNTS*/};
 
 void init() {
 	stato = /*STATO_INIZIALE*/;
-	inputs = /*INPUTS_INIZIALI*/;
+	raw_inputs = inputs = /*INPUTS_INIZIALI*/; // Evita di dover aspettare il debounce
 	return;
 }
 
 int main() {
-	int i;
+	int i, counter = 0;
 
 	init();
 
 // Il loop inizia da qua
 
-	// inputs = PORTA
+	// raw_inputs = PORTA
 
 	printf("Stato iniziale: %i\n", stato);
 
-	for (i = 0; i < NUM_INGRESSI; i++) {
-		#define uscitaRC (stati_RC[i])
+	counter++;
+	counter %= /*INTERVALLO*/;
 
-		if (debounced[i]) {
-			// Filtro RC digitale
-			#define ingresso ( !!( inputs & (1 << i) ) )
-			uscitaRC += (65535 * ingresso - uscitaRC) >> /*COSTANTE_PER_RC*/;
+	if (counter == 0) {
+		for (i = 0; i < NUM_INGRESSI; i++) {
+			#define ingresso ( !!( raw_inputs & (1 << i) ) )
+			#define count (input_counts[i])
+
+			if (!debounced[i]) {
+				if (ingresso)
+					inputs |=  (1 << i); // Set
+				else
+					inputs &= ~(1 << i); // Clear
+				continue;
+			}
+
+			if (ingresso && count != 0xFF)
+				count++;
+			else if (!ingresso && count != 0x00)
+				count--;
 
 			// Trigger di Schmitt
-			if ((ingresso && uscitaRC < /*SOGLIA_BASSA*/) || (!ingresso && uscitaRC > /*SOGLIA_ALTA*/)) {
-				// toggle
-				inputs ^= BIT(i);
-			}
+			if ((ingresso && count < /*SOGLIA_BASSA*/) || (!ingresso && count > /*SOGLIA_ALTA*/))
+				inputs ^= BIT(i); // Toggle
 		}
-
-		// printf("Ingresso %i: filtro RC %i, ingresso pulito %i\n", i, uscitaRC, ingresso);
 	}
 
 	for (i = 0; i < NUM_TRANSIZIONI; i++) {

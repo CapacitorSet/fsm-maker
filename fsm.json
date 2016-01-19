@@ -19,8 +19,8 @@
 	"antirimbalzo": {
 		"esponente": 2,
 		"schmitt": {
-			"basso": 0.3,
-			"alto": 0.7
+			"basso": "30",
+			"alto": "250"
 		},
 		"porte": [
 			"Pulsante_uno",
