@@ -16,28 +16,28 @@ stato_t	stato;
 io_t	raw_inputs, inputs, outputs, bus;
 
 // Gli stati di partenza
-stato_t partenza[] = {/*PARTENZA*/};
+const stato_t partenza[] = {/*PARTENZA*/};
 // Gli stati di arrivo
-stato_t arrivo[] = {/*ARRIVO*/};
+const stato_t arrivo[] = {/*ARRIVO*/};
 
 // Gli ingressi fisici considerati per una transizione
-io_t port_in_bitmask[] = {/*PORT_IN_BITMASK*/};
+const io_t port_in_bitmask[] = {/*PORT_IN_BITMASK*/};
 // I valori attesi degli ingressi fisici perche' si faccia la transizione
-io_t port_in_valori[] = {/*PORT_IN_VALORI*/};
+const io_t port_in_valori[] = {/*PORT_IN_VALORI*/};
 // Le uscite fisiche modificate da una transizione
-io_t port_out_bitmask[] = {/*PORT_OUT_BITMASK*/};
+const io_t port_out_bitmask[] = {/*PORT_OUT_BITMASK*/};
 // I valori scritti su una porta fisica da una transizione
-io_t port_out_valori[] = {/*PORT_OUT_VALORI*/};
+const io_t port_out_valori[] = {/*PORT_OUT_VALORI*/};
 
 #if BUS_ENABLED
 // Gli ingressi di bus considerati per una transizione
-io_t bus_in_bitmask[] =  {/*BUS_IN_BITMASK*/};
+const io_t bus_in_bitmask[] =  {/*BUS_IN_BITMASK*/};
 // I valori attesi degli ingressi di bus perche' si faccia la transizione
-io_t bus_in_valori[] = {/*BUS_IN_VALORI*/};
+const io_t bus_in_valori[] = {/*BUS_IN_VALORI*/};
 // Le uscite di bus modificate da una transizione
-io_t bus_out_bitmask[] = {/*BUS_OUT_BITMASK*/};
+const io_t bus_out_bitmask[] = {/*BUS_OUT_BITMASK*/};
 // I valori scritti su una porta virtuale da una transizione
-io_t bus_out_valori[] = {/*BUS_OUT_VALORI*/};
+const io_t bus_out_valori[] = {/*BUS_OUT_VALORI*/};
 #endif
 
 #if DEBOUNCE_ENABLED
