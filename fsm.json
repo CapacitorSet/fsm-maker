@@ -2,14 +2,20 @@
 	"nome": "Ascensore",
 	"descrizione": "Ascensore a tre piani",
 	"tipo": "mealy",
-	"input": [
-		"Pulsante_uno",
-		"Pulsante_due",
-		"Pulsante_tre",
-		"FC_uno",
-		"FC_due",
-		"FC_tre"
-	],
+	"i/o": {
+		"input": [
+			"Pulsante_uno",
+			"Pulsante_due",
+			"Pulsante_tre",
+			"FC_uno",
+			"FC_due",
+			"FC_tre"
+		],
+		"output": [
+			"Lampada"
+		],
+		"bus": []
+	},
 	"antirimbalzo": {
 		"esponente": 2,
 		"schmitt": {
@@ -22,9 +28,6 @@
 			"Pulsante_tre"
 		]
 	},
-	"output": [
-		"Lampada"
-	],
 	"stati": [
 		"2",
 		"1",
