@@ -131,6 +131,9 @@ stringa.BUS_OUT_VALORI = dati.transizioni
 	.map(d => d.toBitmask(dati.io.output))
 	.toString();
 
+stringa.BUS_ENABLED = Number(dati.io.bus.length != 0);
+stringa.DEBOUNCE_ENABLED = Number(dati.antirimbalzo.porte.length != 0);
+
 i = 1;
 stringa.INPUT_COUNTS = dati.io.input.map(x => 127).toString();
 stringa.INGRESSI_DEBOUNCED = dati.io.input
