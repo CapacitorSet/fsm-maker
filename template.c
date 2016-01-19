@@ -1,10 +1,12 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define NUM_TRANSIZIONI (/*NUM_TRANSIZIONI*/)
-#define NUM_INGRESSI    (/*NUM_INGRESSI*/)
 #define BIT(n)          (1 << n)
 #define NTH_BIT(x, n)   ((BIT(n) & x) >> n)
+
+#define NUM_MACCHINE    (/*NUM_MACCHINE*/)
+#define NUM_TRANSIZIONI (/*NUM_TRANSIZIONI*/)
+#define NUM_INGRESSI    (/*NUM_INGRESSI*/)
 
 #define BUS_ENABLED /*BUS_ENABLED*/ // Esistono variabili sul bus?
 #define DEBOUNCE_ENABLED /*DEBOUNCE_ENABLED*/ // Esiste almeno un dispositivo per cui il debounce è abilitato?
@@ -12,9 +14,11 @@
 typedef uint32_t io_t;
 typedef int      stato_t;
 
-stato_t	stato;
-io_t	raw_inputs, inputs, outputs, bus;
+stato_t stato[] = {/*STATI_INIZIALI*/};
+io_t    raw_inputs, inputs, outputs, bus, new_bus;
 
+// L'ID di macchina per cui e' valida una transizione
+const uint8_t fsm_id[] = {/*FSM_ID*/};
 // Gli stati di partenza
 const stato_t partenza[] = {/*PARTENZA*/};
 // Gli stati di arrivo
@@ -45,22 +49,14 @@ const uint8_t debounced[] = {/*INGRESSI_DEBOUNCED*/};
 uint8_t input_counts[] = {/*INPUT_COUNTS*/};
 #endif
 
-void init() {
-	stato = /*STATO_INIZIALE*/;
-	raw_inputs = inputs = /*INPUTS_INIZIALI*/; // Evita di dover aspettare il debounce
-	return;
-}
-
 int main() {
 	int i, counter = 0;
 
-	init();
+	raw_inputs = inputs = /*INPUT_INIZIALI*/;
 
 // Il loop inizia da qua
 
 	// raw_inputs = PORTA
-
-	printf("Stato iniziale: %i\n", stato);
 
 #if DEBOUNCE_ENABLED
 	counter++;
@@ -91,33 +87,42 @@ int main() {
 	}
 #endif
 
-	for (i = 0; i < NUM_TRANSIZIONI; i++) {
-		// stato non corrispondente? passa al prossimo
-		if (stato != partenza[i]) continue;
-		// porte fisiche di ingresso non corrispondenti? passa
-		if ((inputs & port_in_bitmask[i]) != port_in_valori[i]) continue;
-#if BUS_ENABLED
-		// porte virtuali di ingresso non corrispondenti? passa
-		if ((bus & bus_in_bitmask[i]) != bus_in_bitmask[i]) continue;
-#endif
-		// se sei qua, lo stato e le condizioni corrispondono
-		stato = arrivo[i];
+	for (int IDMacchina = 0; IDMacchina < NUM_MACCHINE; IDMacchina++) {
+		printf("Stato iniziale della macchina %i: %i\n", IDMacchina, stato[IDMacchina]);
 
-		// Clear
-		outputs &= ~port_out_bitmask[i];
-		// Set
-		outputs |= port_out_valori[i];
+		for (i = 0; i < NUM_TRANSIZIONI; i++) {
+			// ID macchina non corrispondente? passa al prossimo
+			if (fsm_id[i] != IDMacchina) continue;
+			// stato non corrispondente? passa
+			if (stato[IDMacchina] != partenza[i]) continue;
+			// porte fisiche di ingresso non corrispondenti? passa
+			if ((inputs & port_in_bitmask[i]) != port_in_valori[i]) continue;
+#if BUS_ENABLED
+			// porte virtuali di ingresso non corrispondenti? passa
+			if ((bus & bus_in_bitmask[i]) != bus_in_bitmask[i]) continue;
+#endif
+			// se sei qua, lo stato e le condizioni corrispondono
+			stato[IDMacchina] = arrivo[i];
+
+			// Clear
+			outputs &= ~port_out_bitmask[i];
+			// Set
+			outputs |= port_out_valori[i];
 
 #if BUS_ENABLED
-		// Clear
-		bus &= ~bus_out_bitmask[i];
-		// Set
-		bus |= bus_out_valori[i];
+			// Scrivi le modifiche in un buffer.
+			// Clear
+			new_bus &= ~bus_out_bitmask[i];
+			// Set
+			new_bus |= bus_out_valori[i];
 #endif
-		break;
+			break;
+		}
+		// Verifica che la transizione e' avvenuta
+		printf("Stato finale della macchina %i: %i, output finali: %i\n", IDMacchina, stato[IDMacchina], outputs);
 	}
-	// Verifica che la transizione e' avvenuta
-	printf("Stato finale: %i, output finali: %i\n", stato, outputs);
+	// Flusha il buffer in bus.
+	bus = new_bus;
 
 // e finisce qua
 

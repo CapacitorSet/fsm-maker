@@ -11,8 +11,11 @@ dati.io = dati["i/o"]; // Piu' comodo da scrivere
 
 // Mappa ogni nome di stato a un numero incrementale
 var IDStato = {},
-	i = 0;
-dati.stati.forEach(x => IDStato[x] = i++);
+	i = 0; // Contatore di stati
+dati.macchine.forEach(macchina => macchina.stati.forEach(x => IDStato[x] = i++));
+
+for (var IDMacchina in dati.macchine)
+	dati.macchine[IDMacchina].id = IDMacchina;
 
 console.log("Mappa stati:", IDStato);
 
@@ -36,8 +39,32 @@ Array.prototype.notFilter = function(fn) {
 	return this.filter(x => !fn(x));
 };
 
+Array.prototype.flatten = function() {
+	return this.reduce(
+		(x, d) => x.concat(d),
+		[]
+	);
+};
+
 var rimuoviEsclamativo = d => isNot(d) ? d.substr(1, d.length) : d;
 var stringa = {};
+
+// dati.transizioni è una variabile di comodo, contiene l'array flattenato delle transizioni di ciascuna fsm
+dati.transizioni = dati.macchine.map(get("transizioni")).flatten();
+
+stringa.INPUT_INIZIALI = dati["input iniziali"].toBitmask(dati.io.input);
+
+stringa.NUM_MACCHINE = dati.macchine.length;
+
+stringa.FSM_ID = dati.macchine
+	.map(d => d.transizioni.map(x => d.id))
+	.flatten()
+	.toString();
+
+stringa.STATI_INIZIALI = dati.macchine
+	.map(get("stato iniziale"))
+	.map(getID)
+	.toString();
 
 // Prendi i campi "da", trasformali in ID, tabulali
 stringa.PARTENZA = dati.transizioni
@@ -147,13 +174,6 @@ stringa.INTERVALLO = dati.antirimbalzo.schmitt.intervallo || 1; // Defaulta a 1
 
 stringa.NUM_TRANSIZIONI = dati.transizioni.length;
 stringa.NUM_INGRESSI = dati.io.input.length;
-
-// Prendi lo stato iniziale, ottienine l'ID
-stringa.STATO_INIZIALE = IDStato[dati.iniziali.stato];
-// Prendi gli input iniziali, rimuovi quelli che iniziano per !, trasformali in bitmask
-stringa.INPUTS_INIZIALI = dati.iniziali.input
-	.filter(d => !isNot(d))
-	.toBitmask(dati.io.input);
 
 console.log(stringa);
 
