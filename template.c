@@ -123,7 +123,8 @@ int main() {
 #endif
 
 #if MULTIPLE_FSMS
-	for (int IDMacchina = 0; IDMacchina < NUM_MACCHINE; IDMacchina++) {
+	int IDMacchina;
+	for (IDMacchina = 0; IDMacchina < NUM_MACCHINE; IDMacchina++) {
 		#define stato_attuale (stato[IDMacchina])
 #else
 	#define IDMacchina (0)

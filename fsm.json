@@ -1,7 +1,6 @@
 {
 	"nome": "Ascensore",
 	"descrizione": "Ascensore a tre piani",
-	"tipo": "mealy",
 	"i/o": {
 		"input": [
 			"Pulsante_uno",
@@ -30,6 +29,35 @@
 		]
 	},
 	"macchine": [
+		{
+			"stati": [
+				"2",
+				"1",
+				"0",
+				"-1",
+				"-2"
+			],
+			"stato iniziale": "0",
+			"transizioni": [
+				{"da":  "0", "a":  "1", "condizioni": ["FC_uno", "Pulsante_due"]},
+				{"da":  "0", "a":  "2", "condizioni": ["FC_uno", "Pulsante_tre"]},
+				{"da":  "0", "a": "-1", "condizioni": ["FC_due", "Pulsante_uno"]},
+				{"da":  "0", "a":  "1", "condizioni": ["FC_due", "Pulsante_tre"]},
+				{"da":  "0", "a": "-2", "condizioni": ["FC_tre", "Pulsante_uno"]},
+				{"da":  "0", "a": "-1", "condizioni": ["FC_tre", "Pulsante_due"]},
+
+				{"da":  "2", "a":  "1", "condizioni": ["FC_due"]},
+				{"da": "-2", "a": "-1", "condizioni": ["FC_due"]},
+
+				{"da":  "1", "a":  "0", "condizioni": ["FC_uno"]},
+				{"da":  "1", "a":  "0", "condizioni": ["FC_due"]},
+				{"da":  "1", "a":  "0", "condizioni": ["FC_tre"]},
+
+				{"da": "-1", "a":  "0", "condizioni": ["FC_uno"]},
+				{"da": "-1", "a":  "0", "condizioni": ["FC_due"]},
+				{"da": "-1", "a":  "0", "condizioni": ["FC_tre"]}
+			]
+		},
 		{
 			"stati": [
 				"2",

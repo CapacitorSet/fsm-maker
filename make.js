@@ -2,11 +2,6 @@ var fs = require("fs"),
 	dati = JSON.parse(fs.readFileSync("fsm.json", "utf8")),
 	template = fs.readFileSync("template.c", "utf8");
 
-if (dati.tipo != "mealy") {
-	console.log('Devi specificare il tipo di FSM "mealy".');
-	return;
-}
-
 dati.io = dati["i/o"]; // Piu' comodo da scrivere
 
 // Mappa ogni nome di stato a un numero incrementale
@@ -16,8 +11,6 @@ dati.macchine.forEach(macchina => macchina.stati.forEach(x => IDStato[x] = i++))
 
 for (var IDMacchina in dati.macchine)
 	dati.macchine[IDMacchina].id = IDMacchina;
-
-console.log("Mappa stati:", IDStato);
 
 // Funtore che restituisce una funzione che estrae il campo name dall'argomento
 get = name => (d => d[name] || "");
@@ -176,6 +169,8 @@ stringa.NUM_TRANSIZIONI = dati.transizioni.length;
 stringa.NUM_INGRESSI = dati.io.input.length;
 
 console.log(stringa);
+
+console.log("Mappa stati:", IDStato);
 
 // Prendi le chiavi, sostituisci /*KEY*/ con value
 var file = Object.keys(stringa).reduce(
