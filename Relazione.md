@@ -24,7 +24,7 @@ Come prima cosa, descriviamo le caratteristiche *generali* dell'automa.
 
 ### Nome, descrizione
 Iniziamo definendo il nome e la descrizione dell'automa.
-```
+```JSON
 {
     "nome": "Tornello",
     "descrizione": "Un tornello a moneta."
@@ -37,29 +37,31 @@ Definiamo poi le entrate e le uscite dell'automa.
 
 * Individuiamo gli input *fisici*, e scriviamoli nel campo `"i/o".input`.
 >Il tornello ha due input fisici: la moneta e il pulsante. Quindi possiamo scrivere:
->```
+>```JSON
 >{
 >    "nome": "Tornello",
 >    "descrizione": "Un tornello a moneta.",
 >    "i/o": {
 >        "input": ["Moneta", "Pulsante"]
 >    }
+>}
 >```
 
 * Facciamo la stessa cosa con gli output *fisici*, nel campo `"i/o".output`.
 >Ipotizziamo che il tornello abbia due output fisici: un segnale blocca il meccanismo (chiamiamolo `SegnaleBlocca`), e un altro lo apre (chiamiamolo `SegnaleApri`). Allora scriviamo:
->```
+>```JSON
 >{
 >    ...
 >    "i/o": {
 >        "input": ["Moneta", "Pulsante"],
 >        "output": ["SegnaleBlocca", "SegnaleApri"]
 >    }
+>}
 >```
 
 * In generale, un automa può comprendere diverse macchine a stati, che hanno bisogno di una memoria condivisa (le uscite di una sono ingressi dell'altra). Specifichiamo le variabili condivise in `"i/o".bus`.
 >Ad esempio, il nostro tornello potrebbe contenere un automa che gestisce l'apertura e la chiusura, e un automa contatore, che conta quante volte si apre il cancello. In quel caso, potremmo definire una variabile condivisa `Incrementa`: quando il tornello si apre, questo bit va alto per un ciclo, il contatore legge questo bit e incrementa il conteggio. In quel caso, scriveremmo:
->```
+>```JSON
 >{
 >    ...
 >    "i/o": {
@@ -67,6 +69,7 @@ Definiamo poi le entrate e le uscite dell'automa.
 >        "output": ["SegnaleBlocca", "SegnaleApri"],
 >        "bus": ["Incrementa"]
 >    }
+>}
 >```
 
  **Se l'automa contiene solo una macchina a stati, non c'è bisogno di definire** `"i/o".bus`**.**
@@ -75,10 +78,10 @@ Definiamo poi le entrate e le uscite dell'automa.
 Se si vuole testare l'automa prima di caricarlo su un microcontrollore, può essere utile definire la situazione iniziale degli input. E' possibile farlo tramite `"input iniziali"`.
 
 >Ad esempio, se vogliamo simulare che è già stata inserita una moneta (e quindi che l'input `Moneta` inizialmente è alto), scriviamo:
->```
+>```JSON
 >{
 >    ...
->    "i/o": { ... }
+>    "i/o": { ... },
 >    "input iniziali": ["Moneta"]
 >}
 >```
@@ -95,7 +98,7 @@ Questo contatore viene poi letto da un trigger di Schmitt, le cui soglie sono de
 Le porte su cui viene attivata questa funzionalità sono definite in `antirimbalzo.porte`.
 
 >Ad esempio, nel tornello vogliamo attivare l'antirimbalzo solo sull'input `Pulsante`. Scegliamo, arbitrariamente, che il controllo venga fatto ogni ciclo (`antirimbalzo.intervallo = 1`), e che la soglia alta e la soglia bassa siano rispettivamente `250` e `30`:
->```
+>```JSON
 >{
 >    "nome": "Tornello",
 >    ...
@@ -114,7 +117,7 @@ Le porte su cui viene attivata questa funzionalità sono definite in `antirimbal
 Le macchine sono definite in `macchine`.
 
 >Quindi, il file avrà questo aspetto:
->```
+>```JSON
 >{
 >    "nome": "Tornello",
 >    "i/o": {...},
@@ -138,7 +141,7 @@ Le macchine sono definite in `macchine`.
 Iniziamo definendo i nomi degli stati di ciascuna macchina in `.stati`.
 
 >Per il tornello, abbiamo lo stato aperto e lo stato chiuso:
->```
+>```JSON
 >{
 >    "nome": "Tornello",
 >    ...
@@ -155,7 +158,7 @@ Iniziamo definendo i nomi degli stati di ciascuna macchina in `.stati`.
 
 &nbsp;
 >Per brevità, d'ora in poi ci limiteremo a mostrare la descrizione di una singola macchina, ad esempio:
->```
+>```JSON
 >{
 >    "stati": [
 >        "Aperto",
@@ -168,7 +171,7 @@ Iniziamo definendo i nomi degli stati di ciascuna macchina in `.stati`.
 Definiamo lo stato iniziale della macchina in `"stato iniziale"`.
 
 >Se vogliamo che inizialmente il tornello sia nello stato `Chiuso`:
->```
+>```JSON
 >    {
 >        "stati": [
 >            "Aperto",
@@ -199,7 +202,7 @@ Finalmente, definiamo l'elemento più importante, le transizioni della macchina 
 **Nota**: per negare una condizione si usa `!` davanti al nome. Ad esempio, `"condizioni": ["!Fotocellula"]` significa "fai la transizione solo se l'input Fotocellula non è attivo".
 
 >Mettendo tutto insieme in forma di array, otteniamo:
->```
+>```JSON
 {
     "stati": ["Aperto", "Chiuso"],
     "stato iniziale": "Chiuso",
@@ -234,11 +237,11 @@ Finalmente, definiamo l'elemento più importante, le transizioni della macchina 
 Se è necessario chiamare del codice C personalizzato, è possibile farlo tramite `hooks`, che contiene un nome di funzione. Questa funzione viene definita in `hooks.c` così:
 
 * se i bus sono abilitati, con il prototipo
-```
+```C
     void funzione(const io_t inputs, io_t outputs, const io_t bus, io_t new_bus)
 ```
 * se i bus non sono abilitati (cioè se non è stata definita nessuna variabile in `"i/o".bus`, con il prototipo
-```
+```C
 void funzione(const io_t inputs, io_t outputs)
 ```
 >`io_t` corrisponde a `uint32_t`, cioè a 32 bit.
@@ -247,14 +250,14 @@ void funzione(const io_t inputs, io_t outputs)
 &nbsp;
 >Ad esempio, mettiamo di voler stampare la stringa *Hello world!* quando il tornello si apre.
 >Come prima cosa, scriviamo la funzione `hello`, usando il prototipo corretto (`void funzione(const io_t inputs, io_t outputs)`:
->```
+>```C
 >void hello(const io_t inputs, io_t outputs) {
 >    printf("Hello world!\n");
 >}
 >```
 >Poi, copiamo questa funzione in `hooks.c`.
 >Fatto questo, modifichiamo il file che definisce l'automa, e cambiamo la riga
->```
+>```JSON
 >...
 >{
           "da": "Chiuso",
@@ -265,7 +268,7 @@ void funzione(const io_t inputs, io_t outputs)
 >...
 >```
 >in
->```
+>```JSON
 {
     "da": "Chiuso",
     "a": "Aperto",
@@ -340,7 +343,7 @@ L'antirimbalzo viene implementato con un semplice byte di conteggio, associato a
 
 Si può scegliere che l'operazione venga fatta solo una volta ogni N cicli: in quel caso, si usa un byte che viene incrementato a ogni ciclo, e si controlla che il byte modulo N sia uguale a 0.
 
-```
+```C
 cicli++;
 cicli %= N;
 if (cicli == 0) {
@@ -360,7 +363,7 @@ if (cicli == 0) {
 
 Tuttavia, non sempre queste sono richieste: ad esempio, un automa molto semplice potrebbe consistere di una sola macchina. In quel caso, per motivi di performance il codice viene "semplificato", rimuovendo le strutture dati necessarie a supportare le macchine multiple: questo viene fatto tramite le direttive per il preprocessore.
 Quando il codice viene transpilato in C, vengono create delle linee come `#define SUPPORTA_MACCHINE_MULTIPLE 0`; in seguito, all'interno del loop si usa le direttive `#if` in questo modo:
-```
+```C
 int IDMacchina = 0;
 #if SUPPORTA_MACCHINE_MULTIPLE
     for (; IDMacchina < NUMERO_MACCHINE; IDMacchina++) {
