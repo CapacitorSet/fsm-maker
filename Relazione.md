@@ -238,7 +238,7 @@ Se è necessario chiamare del codice C personalizzato, è possibile farlo tramit
 
 * se i bus sono abilitati, con il prototipo
 ```C
-    void funzione(const io_t inputs, io_t outputs, const io_t bus, io_t new_bus)
+void funzione(const io_t inputs, io_t outputs, const io_t bus, io_t new_bus)
 ```
 * se i bus non sono abilitati (cioè se non è stata definita nessuna variabile in `"i/o".bus`, con il prototipo
 ```C
