@@ -260,10 +260,10 @@ void funzione(const io_t inputs, io_t outputs)
 >```JSON
 >...
 >{
-          "da": "Chiuso",
-          "a": "Aperto",
-          "condizioni": ["Moneta"],
-          "uscite": ["SegnaleApri"]
+    "da": "Chiuso",
+    "a": "Aperto",
+    "condizioni": ["Moneta"],
+    "uscite": ["SegnaleApri"]
 >}
 >...
 >```
