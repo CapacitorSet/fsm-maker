@@ -48,6 +48,8 @@ var stringa = {};
 // dati.transizioni è una variabile di comodo, contiene l'array flattenato delle transizioni di ciascuna fsm
 dati.transizioni = dati.macchine.map(get("transizioni")).flatten();
 
+stringa.HOOKS_ENABLED = 0; // to do
+
 stringa.INPUT_INIZIALI = dati["input iniziali"].toBitmask(dati.io.input);
 
 stringa.NUM_MACCHINE = dati.macchine.length;

@@ -10,6 +10,7 @@
 
 #define BUS_ENABLED /*BUS_ENABLED*/ // Esistono variabili sul bus?
 #define DEBOUNCE_ENABLED /*DEBOUNCE_ENABLED*/ // Esiste almeno un dispositivo per cui il debounce è abilitato?
+#define HOOKS_ENABLED /*HOOKS_ENABLED*/ // Sono abilitati gli snippet eseguiti su una transizione?
 
 #if NUM_MACCHINE == 1
 	#define MULTIPLE_FSMS 0
@@ -64,6 +65,22 @@ const io_t bus_out_valori[] = {/*BUS_OUT_VALORI*/};
 #if DEBOUNCE_ENABLED
 const uint8_t debounced[] = {/*INGRESSI_DEBOUNCED*/};
 uint8_t input_counts[] = {/*INPUT_COUNTS*/};
+#endif
+
+#if HOOKS_ENABLED
+	#if BUS_ENABLED
+		void nulla(const io_t inputs, io_t outputs, const io_t bus, io_t new_bus) {
+
+		}
+
+		void (*hooks[])(const io_t inputs, io_t outputs, const io_t bus, io_t new_bus) = {nulla};
+	#else
+		void nulla(const io_t inputs, io_t outputs) {
+
+		}
+
+		void (*hooks[])(const io_t inputs, io_t outputs) = {nulla};
+	#endif
 #endif
 
 int main() {
