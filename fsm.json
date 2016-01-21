@@ -43,7 +43,7 @@
 				{"da":  "0", "a":  "2", "condizioni": ["FC_uno", "Pulsante_tre"]},
 				{"da":  "0", "a": "-1", "condizioni": ["FC_due", "Pulsante_uno"]},
 				{"da":  "0", "a":  "1", "condizioni": ["FC_due", "Pulsante_tre"]},
-				{"da":  "0", "a": "-2", "condizioni": ["FC_tre", "Pulsante_uno"]},
+				{"da":  "0", "a": "-2", "condizioni": ["FC_tre", "Pulsante_uno"], "codice": "hello"},
 				{"da":  "0", "a": "-1", "condizioni": ["FC_tre", "Pulsante_due"]},
 
 				{"da":  "2", "a":  "1", "condizioni": ["FC_due"]},
