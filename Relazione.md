@@ -4,9 +4,12 @@ Transpiler JSON &rarr; C per macchine a stati finiti
 Questo documento ha l'obiettivo di descrivere il transpiler da JSON a C per macchine a stati "fsm-maker". Se ne descrive l'utilizzo e l'implementazione.
 
 E' possibile scaricare il software da `https://github.com/CapacitorSet/fsm-maker/releases`.
+
 # Glossario
 **JSON**: Acronimo di *JavaScript Object Notation*, formato testuale per lo scambio di dati in forma di array e coppie chiave-valore.
+
 **Coppia chiave-valore**: Associazione tra un campo (ad esempio `colore`) e il suo valore (`rosso`). In JSON si rappresenta come `"colore": "rosso"`.
+
 **Transpiler**: Sinonimo di *source-to-source compiler*, un'applicazione che prende in input del codice sorgente in un linguaggio e produce il codice sorgente equivalente in un altro linguaggio.
 
 # Utilizzo
