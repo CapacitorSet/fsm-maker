@@ -4,6 +4,9 @@ var fs = require("fs"),
 
 dati.io = dati["i/o"]; // Piu' comodo da scrivere
 
+if (!dati["input iniziali"])
+	dati["input iniziali"] = [];
+
 // Mappa ogni nome di stato a un numero incrementale
 var IDStato = {},
 	i = 0; // Contatore di stati
