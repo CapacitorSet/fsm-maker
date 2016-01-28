@@ -280,6 +280,7 @@ void funzione(const io_t inputs, io_t outputs)
     "codice": "hello"
 }
 >```
+
 ## Codice completo
 Si allega il listato di `fsm.json` per l'automa del tornello.
 
@@ -307,14 +308,16 @@ Esegui l'eventuale antirimbalzo.
 Per ciascuna macchina:
     Per ciascuna transizione:
         Se lo stato di partenza non corrisponde, passa alla prossima.
-        Della porta di input, considera solo le condizioni necessarie. Se il valore non corrisponde a quello atteso, passa alla prossima.
-        Se sono abilitati i bus:
-            Del bus, considera solo le condizioni necessarie. Se il valore non corrisponde a quello atteso, passa alla prossima.
+        Della porta di input, considera solo le condizioni necessarie.
+            Se il valore non corrisponde a quello atteso, passa alla prossima.
+        Del bus, considera solo le condizioni necessarie.
+            Se il valore non corrisponde a quello atteso, passa alla prossima.
+        
         // Arrivati a questo punto, stato e condizioni corrispondono: esegui la transizione.
-        Stato attuale = arrivo[i]
-        Se sono abilitati i bus:
-            Scrivi il valore finale nel buffer del bus
-    Flusha il buffer del bus, nel bus.
+        Imposta il nuovo stato
+        Imposta il nuovo valore del bus
+        Chiama l'eventuale hook C
+    Flusha il buffer del bus
 ```
 
 L'operazione "considera solo le condizioni necessarie" viene effettuata con il *bitmasking*. Le bitmask permettono al codice di considerare solo alcuni bit.
@@ -419,3 +422,27 @@ L'utente descrive una macchina a stati con un file JSON. Il formato è definito 
         * La chiave `a` è una stringa con il nome dello stato finale.
         * La chiave `condizioni` è un array di stringhe, ciascuna corrispondente al nome di un input. Se la condizione dev'essere negata, la stringa inizia per `!`.
         * La chiave `codice` è opzionale, ed è una stringa con il nome della funzione da chiamare quando viene eseguita la transizione.
+
+Per la grammatica JSON e le definizioni di *oggetto*, *array* e *stringa* si rimanda alla relativa specifica tecnica su http://json.org. Si riportano alcuni esempi per brevità.
+
+###Oggetti
+Insieme di coppie chiave-valore separate da virgola racchiuso da parentesi graffe. Un valore può essere una stringa, un numero, un array, un oggetto.
+```JSON
+{"nome": "Pippo", "anni": 27}
+{"serie": "temperatura", "valori": [0, 3, 2, -3]}
+{"tipo": "oggetto", "contenuto": {"descrizione": "un altro oggetto"}}
+```
+
+###Array
+Insieme di valori separati da virgola racchiuso da parentesi quadre. Un valore può essere una stringa, un numero, un array, un oggetto.
+```JSON
+["rosso", "arancio", "giallo", 10, 7]
+["blu", {"nome": "Pippo"}, {"data": "01/01/2000"}]
+```
+
+###Stringa
+Insieme di caratteri Unicode racchiusi da doppi apici. Il carattere "doppi apici" all'interno della stringa deve essere preceduto da un backwards slash.
+```JSON
+"Pippo"
+"Un \"transpiler\" è un tipo di compilatore."
+```
