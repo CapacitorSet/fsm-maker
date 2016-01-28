@@ -38,13 +38,14 @@ Definiamo poi le entrate e le uscite dell'automa.
 
 * Individuiamo gli input *fisici*, e scriviamoli nel campo `"i/o".input`.
 >Il tornello ha due input fisici: la moneta e il pulsante. Quindi possiamo scrivere:
+
 >```YAML
->nome: Tornello
->descrizione: Un tornello a moneta.
->i/o:
->   input:
->       - Moneta
->       - Pulsante
+nome: Tornello
+descrizione: Un tornello a moneta.
+i/o:
+    input:
+        - Moneta
+        - Pulsante
 >```
 
 **E' obbligatorio indentare usando un numero costante di spazi.** Di solito si usano 2 oppure 4 spazi.
@@ -52,29 +53,29 @@ Definiamo poi le entrate e le uscite dell'automa.
 * Facciamo la stessa cosa con gli output *fisici*, nel campo `"i/o".output`.
 >Ipotizziamo che il tornello abbia due output fisici: un segnale blocca il meccanismo (chiamiamolo `SegnaleBlocca`), e un altro lo apre (chiamiamolo `SegnaleApri`). Allora scriviamo:
 >```YAML
-># Il resto del codice...
->i/o:
->   input:
->        - Moneta
->        - Pulsante
->   output:
->        - SegnaleBlocca
->        - SegnaleApri
+# Il resto del codice...
+i/o:
+    input:
+        - Moneta
+        - Pulsante
+    output:
+        - SegnaleBlocca
+        - SegnaleApri
 >```
 
 * In generale, un automa può comprendere diverse macchine a stati, che hanno bisogno di una memoria condivisa (le uscite di una sono ingressi dell'altra). Specifichiamo le variabili condivise in `"i/o".bus`.
 >Ad esempio, il nostro tornello potrebbe contenere un automa che gestisce l'apertura e la chiusura, e un automa contatore, che conta quante volte si apre il cancello. In quel caso, potremmo definire una variabile condivisa `Incrementa`: quando il tornello si apre, questo bit va alto per un ciclo, il contatore legge questo bit e incrementa il conteggio. In quel caso, scriveremmo:
 >```YAML
-># Il resto del codice...
->i/o:
->   input:
->       - Moneta
->       - Pulsante
->   output:
->       - SegnaleBlocca
->       - SegnaleApri
->   bus:
->       - Incrementa
+# Il resto del codice...
+i/o:
+    input:
+        - Moneta
+        - Pulsante
+    output:
+        - SegnaleBlocca
+        - SegnaleApri
+    bus:
+        - Incrementa
 >```
 
  **Se l'automa contiene solo una macchina a stati, non c'è bisogno di definire** `"i/o".bus`**.**
@@ -84,9 +85,9 @@ Se si vuole testare l'automa prima di caricarlo su un microcontrollore, può ess
 
 >Ad esempio, se vogliamo simulare che è già stata inserita una moneta (e quindi che l'input `Moneta` inizialmente è alto), scriviamo:
 >```YAML
->i/o: ...
->input iniziali:
->   - Moneta
+i/o: ...
+input iniziali:
+    - Moneta
 >```
 
 #### Antirimbalzo
@@ -102,15 +103,15 @@ Le porte su cui viene attivata questa funzionalità sono definite in `antirimbal
 
 >Ad esempio, nel tornello vogliamo attivare l'antirimbalzo solo sull'input `Pulsante`. Scegliamo, arbitrariamente, che il controllo venga fatto ogni ciclo (`antirimbalzo.intervallo = 1`), e che la soglia alta e la soglia bassa siano rispettivamente `250` e `30`:
 >```YAML
->nome: Tornello
-># ...
->antirimbalzo:
->   intervallo: 1
->   schmitt:
->       alto: 250
->       basso: 30
->   porte:
->       - Pulsante
+nome: Tornello
+# ...
+antirimbalzo:
+    intervallo: 1
+    schmitt:
+        alto: 250
+        basso: 30
+    porte:
+        - Pulsante
 >```
 
 ## Macchine
@@ -118,15 +119,15 @@ Le macchine sono definite in `macchine`.
 
 >Quindi, il file avrà questo aspetto:
 >```YAML
->nome: Tornello
-># ...
->macchine:
->   -
->       nome: Prima macchina
->       # ...
->   -
->       nome: Seconda macchina
->       # ...
+nome: Tornello
+# ...
+macchine:
+    -
+        nome: Prima macchina
+        # ...
+    -
+        nome: Seconda macchina
+        # ...
 >```
 
 &nbsp;
@@ -137,21 +138,21 @@ Iniziamo definendo i nomi degli stati di ciascuna macchina in `.stati`.
 
 >Per il tornello, abbiamo lo stato aperto e lo stato chiuso:
 >```YAML
->nome: Tornello
-># ...
->macchine:
->   -
->       stati:
->           - Aperto
->           - Chiuso
->```   
+nome: Tornello
+# ...
+macchine:
+    -
+        stati:
+            - Aperto
+            - Chiuso
+>```
 
 &nbsp;
 >Per brevità, d'ora in poi ci limiteremo a mostrare la descrizione di una singola macchina, ad esempio:
 >```YAML
->stati:
->   - Aperto
->   - Chiuso
+stati:
+    - Aperto
+    - Chiuso
 >```
 
 #### Stato iniziale
@@ -159,10 +160,10 @@ Definiamo lo stato iniziale della macchina in `"stato iniziale"`.
 
 >Se vogliamo che inizialmente il tornello sia nello stato `Chiuso`:
 >```YAML
->stati:
->   - Aperto
->   - Chiuso
->stato iniziale: Chiuso
+stati:
+    - Aperto
+    - Chiuso
+stato iniziale: Chiuso
 >```
 
 ### Transizioni
