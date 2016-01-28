@@ -1,5 +1,5 @@
 var fs = require("fs"),
-	dati = JSON.parse(fs.readFileSync("fsm.json", "utf8")),
+	dati = require("js-yaml").load(fs.readFileSync("fsm.yaml", "utf8")),
 	template = fs.readFileSync("template.c", "utf8");
 
 dati.io = dati["i/o"]; // Piu' comodo da scrivere
