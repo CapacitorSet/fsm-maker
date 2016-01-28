@@ -47,6 +47,8 @@ Definiamo poi le entrate e le uscite dell'automa.
 >       - Pulsante
 >```
 
+**E' obbligatorio indentare usando un numero costante di spazi.** Di solito si usano 2 oppure 4 spazi.
+
 * Facciamo la stessa cosa con gli output *fisici*, nel campo `"i/o".output`.
 >Ipotizziamo che il tornello abbia due output fisici: un segnale blocca il meccanismo (chiamiamolo `SegnaleBlocca`), e un altro lo apre (chiamiamolo `SegnaleApri`). Allora scriviamo:
 >```YAML
@@ -435,3 +437,5 @@ Insieme di valori. Un valore può essere una stringa, un numero, un array, un og
     colore: rosso
     numero: 8
 ```
+
+Ricordiamo che è obbligatorio indentare con un numero costante di spazi.
