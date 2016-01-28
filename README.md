@@ -5,7 +5,7 @@ Un transpiler YAML → C per macchine a stati finiti.
 
 # Esempi di utilizzo
 
-`fsm.yaml` contiene la descrizione JSON di un semplice ascensore a tre piani. Il comando
+`fsm.yaml` contiene la descrizione YAML di un semplice ascensore a tre piani. Il comando
 
     node make
 
