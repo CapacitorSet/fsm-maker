@@ -120,10 +120,15 @@ int main() {
 	// raw_inputs = PORTA
 
 	#if DEBOUNCE_ENABLED
-		counter++;
-		counter %= /*INTERVALLO*/;
+		#define INTERVALLO /*INTERVALLO*/
+		#if INTERVALLO > 1
+			counter++;
+			counter %= /*INTERVALLO*/;
 
-		if (counter == 0) {
+			if (counter == 0) {
+		#else
+			{
+		#endif
 			for (i = 0; i < NUM_INGRESSI; i++) {
 				#define ingresso ( !!( raw_inputs & (1 << i) ) )
 				#define count (input_counts[i])
