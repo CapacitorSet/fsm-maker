@@ -1,0 +1,50 @@
+nome: Tornello
+descrizione: Un semplice tornello a moneta.
+i/o:
+  input:
+    - Moneta
+    - Pulsante
+  output:
+    - SegnaleApri
+    - SegnaleChiudi
+  bus: []
+input iniziali:
+  - Moneta
+antirimbalzo:
+  intervallo: 1
+  schmitt:
+    basso: 30
+    alto: 225
+  porte:
+    - Pulsante
+macchine:
+  -
+    stati:
+      - Aperto
+      - Chiuso
+    stato iniziale: Chiuso
+    transizioni:
+      -
+        da: Chiuso
+        a: Chiuso
+        condizioni:
+          - "!Moneta"
+      -
+        da: Chiuso
+        a: Aperto
+        condizioni:
+          - Moneta
+        uscite:
+          - SegnaleApri
+      -
+        da: Aperto
+        a: Aperto
+        condizioni:
+          - "!Pulsante"
+      -
+        da: Aperto
+        a: Chiuso
+        condizioni:
+          - Pulsante
+        uscite:
+          - SegnaleChiudi
