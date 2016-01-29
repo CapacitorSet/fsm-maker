@@ -1,6 +1,8 @@
-fs = require("fs");
-template = fs.readFileSync("template.c", "utf8");
-dati = JSON.parse(fs.readFileSync("fsm.json", "utf8"));
+var fs = require("fs"),
+	dati = require("js-yaml").load(fs.readFileSync("fsm.yaml", "utf8")),
+	template = fs.readFileSync("template.c", "utf8");
+
+dati.io = dati["i/o"]; // Piu' comodo da scrivere
 
 if (!dati["input iniziali"])
 	dati["input iniziali"] = [];

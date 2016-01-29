@@ -1,12 +1,15 @@
-Transpiler JSON &rarr; C per macchine a stati finiti
+Transpiler YAML &rarr; C per macchine a stati finiti
 ===
 # Abstract
-Questo documento ha l'obiettivo di descrivere il transpiler da JSON a C per macchine a stati "fsm-maker". Se ne descrive l'utilizzo e l'implementazione.
+Questo documento ha l'obiettivo di descrivere il transpiler da YAML a C per macchine a stati "fsm-maker". Se ne descrive l'utilizzo e l'implementazione.
 
 E' possibile scaricare il software da `https://github.com/CapacitorSet/fsm-maker/releases`.
+
 # Glossario
-**JSON**: Acronimo di *JavaScript Object Notation*, formato testuale per lo scambio di dati in forma di array e coppie chiave-valore.
-**Coppia chiave-valore**: Associazione tra un campo (ad esempio `colore`) e il suo valore (`rosso`). In JSON si rappresenta come `"colore": "rosso"`.
+**YAML**: Acronimo di *Yet Another Markup Language*, formato testuale human-friendly per lo scambio di dati in forma di array e coppie chiave-valore.
+
+**Coppia chiave-valore**: Associazione tra un campo (ad esempio `colore`) e il suo valore (`rosso`). In YAML si rappresenta come `colore: rosso`.
+
 **Transpiler**: Sinonimo di *source-to-source compiler*, un'applicazione che prende in input del codice sorgente in un linguaggio e produce il codice sorgente equivalente in un altro linguaggio.
 
 # Utilizzo
@@ -24,11 +27,9 @@ Come prima cosa, descriviamo le caratteristiche *generali* dell'automa.
 
 ### Nome, descrizione
 Iniziamo definendo il nome e la descrizione dell'automa.
-```
-{
-    "nome": "Tornello",
-    "descrizione": "Un tornello a moneta."
-}
+```YAML
+nome: Tornello
+descrizione: Un tornello a moneta.
 ```
 
 ### I/O (input/output)
@@ -37,36 +38,44 @@ Definiamo poi le entrate e le uscite dell'automa.
 
 * Individuiamo gli input *fisici*, e scriviamoli nel campo `"i/o".input`.
 >Il tornello ha due input fisici: la moneta e il pulsante. Quindi possiamo scrivere:
+
+>```YAML
+nome: Tornello
+descrizione: Un tornello a moneta.
+i/o:
+    input:
+        - Moneta
+        - Pulsante
 >```
->{
->    "nome": "Tornello",
->    "descrizione": "Un tornello a moneta.",
->    "i/o": {
->        "input": ["Moneta", "Pulsante"]
->    }
->```
+
+**E' obbligatorio indentare usando un numero costante di spazi.** Di solito si usano 2 oppure 4 spazi.
 
 * Facciamo la stessa cosa con gli output *fisici*, nel campo `"i/o".output`.
 >Ipotizziamo che il tornello abbia due output fisici: un segnale blocca il meccanismo (chiamiamolo `SegnaleBlocca`), e un altro lo apre (chiamiamolo `SegnaleApri`). Allora scriviamo:
->```
->{
->    ...
->    "i/o": {
->        "input": ["Moneta", "Pulsante"],
->        "output": ["SegnaleBlocca", "SegnaleApri"]
->    }
+>```YAML
+# Il resto del codice...
+i/o:
+    input:
+        - Moneta
+        - Pulsante
+    output:
+        - SegnaleBlocca
+        - SegnaleApri
 >```
 
 * In generale, un automa può comprendere diverse macchine a stati, che hanno bisogno di una memoria condivisa (le uscite di una sono ingressi dell'altra). Specifichiamo le variabili condivise in `"i/o".bus`.
 >Ad esempio, il nostro tornello potrebbe contenere un automa che gestisce l'apertura e la chiusura, e un automa contatore, che conta quante volte si apre il cancello. In quel caso, potremmo definire una variabile condivisa `Incrementa`: quando il tornello si apre, questo bit va alto per un ciclo, il contatore legge questo bit e incrementa il conteggio. In quel caso, scriveremmo:
->```
->{
->    ...
->    "i/o": {
->        "input": ["Moneta", "Pulsante"],
->        "output": ["SegnaleBlocca", "SegnaleApri"],
->        "bus": ["Incrementa"]
->    }
+>```YAML
+# Il resto del codice...
+i/o:
+    input:
+        - Moneta
+        - Pulsante
+    output:
+        - SegnaleBlocca
+        - SegnaleApri
+    bus:
+        - Incrementa
 >```
 
  **Se l'automa contiene solo una macchina a stati, non c'è bisogno di definire** `"i/o".bus`**.**
@@ -75,12 +84,10 @@ Definiamo poi le entrate e le uscite dell'automa.
 Se si vuole testare l'automa prima di caricarlo su un microcontrollore, può essere utile definire la situazione iniziale degli input. E' possibile farlo tramite `"input iniziali"`.
 
 >Ad esempio, se vogliamo simulare che è già stata inserita una moneta (e quindi che l'input `Moneta` inizialmente è alto), scriviamo:
->```
->{
->    ...
->    "i/o": { ... }
->    "input iniziali": ["Moneta"]
->}
+>```YAML
+i/o: ...
+input iniziali:
+    - Moneta
 >```
 
 #### Antirimbalzo
@@ -95,40 +102,32 @@ Questo contatore viene poi letto da un trigger di Schmitt, le cui soglie sono de
 Le porte su cui viene attivata questa funzionalità sono definite in `antirimbalzo.porte`.
 
 >Ad esempio, nel tornello vogliamo attivare l'antirimbalzo solo sull'input `Pulsante`. Scegliamo, arbitrariamente, che il controllo venga fatto ogni ciclo (`antirimbalzo.intervallo = 1`), e che la soglia alta e la soglia bassa siano rispettivamente `250` e `30`:
->```
->{
->    "nome": "Tornello",
->    ...
->    "antirimbalzo": {
->        "intervallo": 1,
->        "schmitt": {
->            "alto": 250,
->            "basso": 30
->        },
->        "porte": ["Pulsante"]
->    }
->}
+>```YAML
+nome: Tornello
+# ...
+antirimbalzo:
+    intervallo: 1
+    schmitt:
+        alto: 250
+        basso: 30
+    porte:
+        - Pulsante
 >```
 
 ## Macchine
 Le macchine sono definite in `macchine`.
 
 >Quindi, il file avrà questo aspetto:
->```
->{
->    "nome": "Tornello",
->    "i/o": {...},
->    ...
->    "macchine": [
->        {
->            "nome": "Prima macchina",
->            ...
->        }, {
->            "nome": "Seconda macchina",
->            ...
->        }
->    ]
->}
+>```YAML
+nome: Tornello
+# ...
+macchine:
+    -
+        nome: Prima macchina
+        # ...
+    -
+        nome: Seconda macchina
+        # ...
 >```
 
 &nbsp;
@@ -138,44 +137,33 @@ Le macchine sono definite in `macchine`.
 Iniziamo definendo i nomi degli stati di ciascuna macchina in `.stati`.
 
 >Per il tornello, abbiamo lo stato aperto e lo stato chiuso:
+>```YAML
+nome: Tornello
+# ...
+macchine:
+    -
+        stati:
+            - Aperto
+            - Chiuso
 >```
->{
->    "nome": "Tornello",
->    ...
->    "macchine": [
->        {
->            "stati": [
->                "Aperto",
->                "Chiuso"
->            ]
->        }
->    ]
->}
->```   
 
 &nbsp;
 >Per brevità, d'ora in poi ci limiteremo a mostrare la descrizione di una singola macchina, ad esempio:
->```
->{
->    "stati": [
->        "Aperto",
->        "Chiuso"
->    ]
->}
+>```YAML
+stati:
+    - Aperto
+    - Chiuso
 >```
 
 #### Stato iniziale
 Definiamo lo stato iniziale della macchina in `"stato iniziale"`.
 
 >Se vogliamo che inizialmente il tornello sia nello stato `Chiuso`:
->```
->    {
->        "stati": [
->            "Aperto",
->            "Chiuso"
->        ],
->   "stato iniziale": "Chiuso"
->    }
+>```YAML
+stati:
+    - Aperto
+    - Chiuso
+stato iniziale: Chiuso
 >```
 
 ### Transizioni
@@ -183,62 +171,65 @@ Finalmente, definiamo l'elemento più importante, le transizioni della macchina 
 
 >La macchina a stati del tornello ha quattro transizioni:
 
->* Da `Chiuso` a `Chiuso` se l'input `Pulsante` è alto;
+>* Da `Chiuso` a `Chiuso` se l'input `Moneta` non è alto;
 >* Da `Chiuso` ad `Aperto`, mettendo alto l'output `SegnaleApri`, se l'input `Moneta` è alto;
->* Da `Aperto` ad `Aperto` se l'input `Moneta` è alto;
+>* Da `Aperto` ad `Aperto` se l'input `Pulsante` non è alto;
 >* Da `Aperto` a `Chiuso`, mettendo alto l'output `SegnaleBlocca`, se l'input `Pulsante` è alto.
 
 >In modo sistematico, possiamo descrivere le transizioni in questo modo:
 
->* `{"da": "Chiuso", "a": "Chiuso", "condizioni": ["Pulsante"]}`
->* `{"da": "Chiuso", "a": "Aperto", "condizioni": ["Moneta"], "uscite": "SegnaleApri"}`
->* `{"da": "Aperto", "a": "Aperto", "condizioni": ["Moneta"]}`
->* `{"da": "Aperto", "a": "Chiuso", "condizioni": ["Pulsante"], "uscite": "SegnaleBlocca"}`
+>* `da: Chiuso, a: Chiuso, condizioni: ["!Moneta"]`
+>* `da: Chiuso, a: Aperto, condizioni: [Moneta], uscite: [SegnaleApri]`
+>* `da: Aperto, a: Aperto, condizioni: ["!Pulsante"]`
+>* `da: Aperto, a: Chiuso, condizioni: [Pulsante], uscite: [SegnaleBlocca]`
 
 
-**Nota**: per negare una condizione si usa `!` davanti al nome. Ad esempio, `"condizioni": ["!Fotocellula"]` significa "fai la transizione solo se l'input Fotocellula non è attivo".
+**Nota**: per negare una condizione si usa `!` davanti al nome. Ad esempio, `condizioni: ["!Fotocellula"]` significa "fai la transizione solo se l'input Fotocellula non è attivo". **Se si usa questa opzione, il nome della condizione dev'essere tra doppi apici**.
+
+>Se non può essere eseguita nessuna transizione, il sistema non emette alcun errore, ma rimane nello stesso stato finchè può avvenire una transizione.
 
 >Mettendo tutto insieme in forma di array, otteniamo:
->```
-{
-    "stati": ["Aperto", "Chiuso"],
-    "stato iniziale": "Chiuso",
-    "transizioni": [
-      {
-          "da": "Chiuso",
-          "a": "Chiuso",
-          "condizioni": ["Pulsante"]
-      },
-      {
-          "da": "Chiuso",
-          "a": "Aperto",
-          "condizioni": ["Moneta"],
-          "uscite": ["SegnaleApri"]
-      },
-      {
-          "da": "Aperto",
-          "a": "Aperto",
-          "condizioni": ["Moneta"]
-      },
-      {
-          "da": "Aperto",
-          "a": "Chiuso",
-          "condizioni": ["Pulsante"],
-          "uscite": ["SegnaleChiudi"]
-      }
-    ]
-}
+>```YAML
+stati:
+    - Aperto
+    - Chiuso
+stato iniziale: Chiuso
+transizioni:
+    -
+        da: Chiuso
+        a: Chiuso
+        condizioni:
+            - "!Moneta"
+    -
+        da: Chiuso
+        a: Aperto
+        condizioni:
+            - Moneta
+        uscite:
+            - SegnaleApri
+    -
+        da: Aperto
+        a: Aperto
+        condizioni:
+            - "!Moneta"
+    -
+        da: Aperto
+        a: Chiuso
+        condizioni:
+            - Pulsante
+        uscite:
+            - SegnaleChiudi
 >```
 
 #### Hook
 Se è necessario chiamare del codice C personalizzato, è possibile farlo tramite `hooks`, che contiene un nome di funzione. Questa funzione viene definita in `hooks.c` così:
 
 * se i bus sono abilitati, con il prototipo
-```
-    void funzione(const io_t inputs, io_t outputs, const io_t bus, io_t new_bus)
+```C
+void funzione(const io_t inputs, io_t outputs, const io_t bus, io_t new_bus)
 ```
 * se i bus non sono abilitati (cioè se non è stata definita nessuna variabile in `"i/o".bus`, con il prototipo
-```
+```C
 void funzione(const io_t inputs, io_t outputs)
 ```
 >`io_t` corrisponde a `uint32_t`, cioè a 32 bit.
@@ -247,35 +238,36 @@ void funzione(const io_t inputs, io_t outputs)
 &nbsp;
 >Ad esempio, mettiamo di voler stampare la stringa *Hello world!* quando il tornello si apre.
 >Come prima cosa, scriviamo la funzione `hello`, usando il prototipo corretto (`void funzione(const io_t inputs, io_t outputs)`:
->```
+>```C
 >void hello(const io_t inputs, io_t outputs) {
 >    printf("Hello world!\n");
 >}
 >```
 >Poi, copiamo questa funzione in `hooks.c`.
->Fatto questo, modifichiamo il file che definisce l'automa, e cambiamo la riga
->```
->...
->{
-          "da": "Chiuso",
-          "a": "Aperto",
-          "condizioni": ["Moneta"],
-          "uscite": ["SegnaleApri"]
->}
->...
+>Fatto questo, modifichiamo il file che definisce l'automa, e cambiamo la sezione
+>```YAML
+da: Chiuso
+a: Aperto
+condizioni:
+    - Moneta
+uscite:
+    - SegnaleApri
+#...
 >```
 >in
+>```YAML
+da: Chiuso
+a: Aperto
+condizioni:
+    - Moneta
+uscite:
+    - SegnaleApri
+codice: hello
+#...
 >```
-{
-    "da": "Chiuso",
-    "a": "Aperto",
-    "condizioni": ["Moneta"],
-    "uscite": ["SegnaleApri"],
-    "codice": "hello"
-}
->```
+
 ## Codice completo
-Si allega il listato di `fsm.json` per l'automa del tornello.
+Si allega il listato di `fsm.yaml` per l'automa del tornello.
 
 # Implementazione
 
@@ -301,14 +293,16 @@ Esegui l'eventuale antirimbalzo.
 Per ciascuna macchina:
     Per ciascuna transizione:
         Se lo stato di partenza non corrisponde, passa alla prossima.
-        Della porta di input, considera solo le condizioni necessarie. Se il valore non corrisponde a quello atteso, passa alla prossima.
-        Se sono abilitati i bus:
-            Del bus, considera solo le condizioni necessarie. Se il valore non corrisponde a quello atteso, passa alla prossima.
+        Della porta di input, considera solo le condizioni necessarie.
+            Se il valore non corrisponde a quello atteso, passa alla prossima.
+        Del bus, considera solo le condizioni necessarie.
+            Se il valore non corrisponde a quello atteso, passa alla prossima.
+        
         // Arrivati a questo punto, stato e condizioni corrispondono: esegui la transizione.
-        Stato attuale = arrivo[i]
-        Se sono abilitati i bus:
-            Scrivi il valore finale nel buffer del bus
-    Flusha il buffer del bus, nel bus.
+        Imposta il nuovo stato
+        Imposta il nuovo valore del bus
+        Chiama l'eventuale hook C
+    Flusha il buffer del bus
 ```
 
 L'operazione "considera solo le condizioni necessarie" viene effettuata con il *bitmasking*. Le bitmask permettono al codice di considerare solo alcuni bit.
@@ -340,7 +334,7 @@ L'antirimbalzo viene implementato con un semplice byte di conteggio, associato a
 
 Si può scegliere che l'operazione venga fatta solo una volta ogni N cicli: in quel caso, si usa un byte che viene incrementato a ogni ciclo, e si controlla che il byte modulo N sia uguale a 0.
 
-```
+```C
 cicli++;
 cicli %= N;
 if (cicli == 0) {
@@ -360,7 +354,7 @@ if (cicli == 0) {
 
 Tuttavia, non sempre queste sono richieste: ad esempio, un automa molto semplice potrebbe consistere di una sola macchina. In quel caso, per motivi di performance il codice viene "semplificato", rimuovendo le strutture dati necessarie a supportare le macchine multiple: questo viene fatto tramite le direttive per il preprocessore.
 Quando il codice viene transpilato in C, vengono create delle linee come `#define SUPPORTA_MACCHINE_MULTIPLE 0`; in seguito, all'interno del loop si usa le direttive `#if` in questo modo:
-```
+```C
 int IDMacchina = 0;
 #if SUPPORTA_MACCHINE_MULTIPLE
     for (; IDMacchina < NUMERO_MACCHINE; IDMacchina++) {
@@ -373,7 +367,7 @@ Osserviamo che se la variabile del preprocessore `SUPPORTA_MACCHINE_MULTIPLE` è
 
 ## Livello 1: le variabili in Javascript
 
-La definizione human-friendly contenuta in `fsm.json` viene letta, e interpretata in JavaScript (in particolare, viene usato Node.js, con la libreria di default `json`). Il risultato è un oggetto JavaScript equivalente.
+La definizione human-friendly contenuta in `fsm.yaml` viene letta, e interpretata in JavaScript (in particolare, viene usato Node.js, con il pacchetto `js-yaml`). Il risultato è un oggetto JavaScript equivalente.
 
 Il codice di `make.js` è complesso, ma sostanzialmente crea diversi array di lunghezza identica, dove l'n-esimo elemento contiene le informazioni per l'n-esima transizione, in particolare:
 
@@ -389,16 +383,16 @@ Questi array vengono poi inseriti in `fsm.c`, sostituendone i placeholder.
 
 Vengono poi compilati altri dati, tra cui gli stati iniziali delle macchine e i dati del controllo antirimbalzo.
 
-## Livello 2: la descrizione JSON
+## Livello 2: la descrizione YAML
 
-L'utente descrive una macchina a stati con un file JSON. Il formato è definito così:
+L'utente descrive una macchina a stati con un file YAML. Il formato è definito così:
 
-* Il file descrive un oggetto (`{}`).
+* Il file descrive un oggetto.
 * La chiave `i/o` è un oggetto.
      * La chiave `i/o.input` è un array di stringhe. Ciascuna stringa è il nome di un input. Il primo elemento dell'array corrisponde al primo bit di input, il secondo elemento al secondo bit e così via.
      * Stessa cosa per `i/o.output`.
      * Stessa cosa per `i/o.bus`.
-* La chiave `"input iniziali"` è un array di stringhe. Ciascuna stringa è il nome di un input.
+* La chiave `input iniziali` è un array di stringhe. Ciascuna stringa è il nome di un input.
 * La chiave `antirimbalzo` è un oggetto.
     * La chiave `antirimbalzo.intervallo` è un numero che specifica ogni quanto effettuare il controllo antirimbalzo (lettura, memorizzazione, isteresi, aggiornamento).
     * La chiave `antirimbalzo.schmitt` è un oggetto.
@@ -413,3 +407,36 @@ L'utente descrive una macchina a stati con un file JSON. Il formato è definito 
         * La chiave `a` è una stringa con il nome dello stato finale.
         * La chiave `condizioni` è un array di stringhe, ciascuna corrispondente al nome di un input. Se la condizione dev'essere negata, la stringa inizia per `!`.
         * La chiave `codice` è opzionale, ed è una stringa con il nome della funzione da chiamare quando viene eseguita la transizione.
+
+Per la grammatica YAML e le definizioni di *oggetto* e *array* si rimanda alla relativa specifica tecnica su http://yaml.org. Si riportano alcuni esempi per brevità.
+
+###Oggetti
+Insieme di coppie chiave-valore. Un valore può essere una stringa, un numero, un array, un oggetto.
+```YAML
+# stringa
+grandezza: temperatura
+# numero
+media: 5
+#array
+valori:
+    - 3
+    - 0
+    - 8
+    - 9
+dettagli: # oggetto
+    data: 01/01/2000
+    autore: Pippo
+```
+
+###Array
+Insieme di valori. Un valore può essere una stringa, un numero, un array, un oggetto.
+```YAML
+- Pippo
+- 27
+# oggetto dentro un array. Notare: trattino, a capo, indentazione, chiave.
+-
+    colore: rosso
+    numero: 8
+```
+
+Ricordiamo che è obbligatorio indentare con un numero costante di spazi.
