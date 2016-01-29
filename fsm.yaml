@@ -1,0 +1,112 @@
+  nome: Ascensore
+  descrizione: Ascensore a tre piani
+  i/o: 
+    input: 
+      - Pulsante uno
+      - Pulsante due
+      - Pulsante tre
+      - Finecorsa uno
+      - Finecorsa due
+      - Finecorsa tre
+    output: 
+      - Lampada
+    bus: []
+  input iniziali: 
+    - Finecorsa tre
+    - Pulsante uno
+  antirimbalzo: 
+    intervallo: 1
+    schmitt: 
+      basso: 30
+      alto: 250
+    porte: 
+      - Pulsante uno
+      - Pulsante due
+      - Pulsante tre
+  macchine: 
+    - 
+      stati: 
+        - due
+        - uno
+        - zero
+        - menouno
+        - menodue
+      stato iniziale: zero
+      transizioni: 
+        - 
+          da: zero
+          a: uno
+          condizioni: 
+            - Finecorsa uno
+            - Pulsante due
+        - 
+          da: zero
+          a: due
+          condizioni: 
+            - Finecorsa uno
+            - Pulsante tre
+        - 
+          da: zero
+          a: menouno
+          condizioni: 
+            - Finecorsa due
+            - Pulsante uno
+        - 
+          da: zero
+          a: uno
+          condizioni: 
+            - Finecorsa due
+            - Pulsante tre
+        - 
+          da: zero
+          a: menodue
+          condizioni: 
+            - Finecorsa tre
+            - Pulsante uno
+          codice: hello
+        - 
+          da: zero
+          a: menouno
+          condizioni: 
+            - Finecorsa tre
+            - Pulsante due
+        - 
+          da: due
+          a: uno
+          condizioni: 
+            - Finecorsa due
+        - 
+          da: menodue
+          a: menouno
+          condizioni: 
+            - Finecorsa due
+        - 
+          da: uno
+          a: zero
+          condizioni: 
+            - Finecorsa uno
+        - 
+          da: uno
+          a: zero
+          condizioni: 
+            - Finecorsa due
+        - 
+          da: uno
+          a: zero
+          condizioni: 
+            - Finecorsa tre
+        - 
+          da: menouno
+          a: zero
+          condizioni: 
+            - Finecorsa uno
+        - 
+          da: menouno
+          a: zero
+          condizioni: 
+            - Finecorsa due
+        - 
+          da: menouno
+          a: zero
+          condizioni: 
+            - Finecorsa tre
