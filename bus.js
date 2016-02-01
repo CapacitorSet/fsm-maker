@@ -5,14 +5,14 @@ if (stringa.BUS_ENABLED) {
 // Prendi i campi "condizioni", considera solo gli i/o virtuali, togli l'eventuale ! iniziale di ogni input, trasformali in bitmask, tabula
 stringa.BUS_IN_BITMASK = dati.transizioni
 	.map(get("condizioni"))
-	.map(x => x.map(rimuoviEsclamativo))
+	.map(Object.keys)
 	.map(a => a.filter(isVirtual))
 	.map(d => d.toBitmask(dati.io.input))
 	.toString();
 // Prendi i campi "condizioni", considera solo gli i/o virtuali, togli gli input che iniziano per !, trasformali in bitmask, tabula
 stringa.BUS_IN_VALORI = dati.transizioni
 	.map(get("condizioni"))
-	.map(d => d.notFilter(isNot))
+	.map(d => Object.keys(d).filter(x => d[x] == "1"))
 	.map(a => a.filter(isVirtual))
 	.map(d => d.toBitmask(dati.io.input))
 	.toString();
@@ -25,7 +25,7 @@ stringa.BUS_OUT_BITMASK = dati.transizioni
 		return d;
 	})
 	.map(get("uscite"))
-	.map(x => x.map(rimuoviEsclamativo))
+	.map(Object.keys)
 	.map(a => a.filter(isVirtual))
 	.map(d => d.toBitmask(dati.io.output))
 	.toString();
@@ -37,7 +37,7 @@ stringa.BUS_OUT_VALORI = dati.transizioni
 		return d;
 	})
 	.map(get("uscite"))
-	.map(d => d.notFilter(isNot))
+	.map(d => Object.keys(d).filter(x => d[x] == "1"))
 	.map(a => a.filter(isVirtual))
 	.map(d => d.toBitmask(dati.io.output))
 	.toString();

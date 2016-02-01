@@ -14,12 +14,9 @@ get = name => (d => d[name] || "");
 getID = d => IDStato[d];
 // Funtore che restituisce una funzione, che se usata con .reduce fa restituire una bitmask partendo da un array di ID di stato
 toBitmask = map => ((n, d) => n + Math.pow(2, map.indexOf(d)));
-// Indica se un nome di stato inizia per !
-isNot = d => d.substr(0, 1) == "!";
 // Indica se un i/o e' virtuale
 isVirtual = d => dati.io.bus.indexOf(d) != -1;
 
-rimuoviEsclamativo = d => d.substr(isNot(d), d.length);
 
 // Trasforma un array in una bitmask
 Array.prototype.toBitmask = function(map) {

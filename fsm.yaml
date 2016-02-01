@@ -37,76 +37,76 @@ macchine:
         da: zero
         a: uno
         condizioni: 
-          - Finecorsa uno
-          - Pulsante due
+          Finecorsa uno: 1
+          Pulsante due: 1
       - 
         da: zero
         a: due
         condizioni: 
-          - Finecorsa uno
-          - Pulsante tre
+          Finecorsa uno: 1
+          Pulsante tre: 1
       - 
         da: zero
         a: menouno
         condizioni: 
-          - Finecorsa due
-          - Pulsante uno
+          Finecorsa due: 1
+          Pulsante uno: 1
       - 
         da: zero
         a: uno
         condizioni: 
-          - Finecorsa due
-          - Pulsante tre
+          Finecorsa due: 1
+          Pulsante tre: 1
       - 
         da: zero
         a: menodue
         condizioni: 
-          - Finecorsa tre
-          - Pulsante uno
+          Finecorsa tre: 1
+          Pulsante uno: 1
         codice: hello
       - 
         da: zero
         a: menouno
         condizioni: 
-          - Finecorsa tre
-          - Pulsante due
+          Finecorsa tre: 1
+          Pulsante due: 1
       - 
         da: due
         a: uno
         condizioni: 
-          - Finecorsa due
+          Finecorsa due: 1
       - 
         da: menodue
         a: menouno
         condizioni: 
-          - Finecorsa due
+          Finecorsa due: 1
       - 
         da: uno
         a: zero
         condizioni: 
-          - Finecorsa uno
+          Finecorsa uno: 1
       - 
         da: uno
         a: zero
         condizioni: 
-          - Finecorsa due
+          Finecorsa due: 1
       - 
         da: uno
         a: zero
         condizioni: 
-          - Finecorsa tre
+          Finecorsa tre: 1
       - 
         da: menouno
         a: zero
         condizioni: 
-          - Finecorsa uno
+          Finecorsa uno: 1
       - 
         da: menouno
         a: zero
         condizioni: 
-          - Finecorsa due
+          Finecorsa due: 1
       - 
         da: menouno
         a: zero
         condizioni: 
-          - Finecorsa tre
+          Finecorsa tre: 1
