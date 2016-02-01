@@ -85,28 +85,40 @@ macchine:
         a: zero
         condizioni: 
           Finecorsa uno: 1
+        uscite:
+          Lampada: 1
       - 
         da: uno
         a: zero
         condizioni: 
           Finecorsa due: 1
+        uscite:
+          Lampada: 1
       - 
         da: uno
         a: zero
         condizioni: 
           Finecorsa tre: 1
+        uscite:
+          Lampada: 1
       - 
         da: menouno
         a: zero
         condizioni: 
           Finecorsa uno: 1
+        uscite:
+          Lampada: 1
       - 
         da: menouno
         a: zero
         condizioni: 
           Finecorsa due: 1
+        uscite:
+          Lampada: 1
       - 
         da: menouno
         a: zero
         condizioni: 
           Finecorsa tre: 1
+        uscite:
+          Lampada: 1

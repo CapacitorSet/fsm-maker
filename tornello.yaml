@@ -28,23 +28,23 @@ macchine:
         da: Chiuso
         a: Chiuso
         condizioni:
-          - "!Moneta"
+          Moneta: 1
       -
         da: Chiuso
         a: Aperto
         condizioni:
-          - Moneta
+          Moneta: 1
         uscite:
-          - SegnaleApri
+          SegnaleApri: 1
       -
         da: Aperto
         a: Aperto
         condizioni:
-          - "!Pulsante"
+          Pulsante: 0
       -
         da: Aperto
         a: Chiuso
         condizioni:
-          - Pulsante
+          Pulsante: 1
         uscite:
-          - SegnaleChiudi
+          SegnaleChiudi: 1
