@@ -178,13 +178,11 @@ Finalmente, definiamo l'elemento più importante, le transizioni della macchina 
 
 >In modo sistematico, possiamo descrivere le transizioni in questo modo:
 
->* `da: Chiuso, a: Chiuso, condizioni: ["!Moneta"]`
->* `da: Chiuso, a: Aperto, condizioni: [Moneta], uscite: [SegnaleApri]`
->* `da: Aperto, a: Aperto, condizioni: ["!Pulsante"]`
->* `da: Aperto, a: Chiuso, condizioni: [Pulsante], uscite: [SegnaleBlocca]`
+>* `da: Chiuso, a: Chiuso, condizioni: {Moneta: 0}`
+>* `da: Chiuso, a: Aperto, condizioni: {Moneta: 1}, uscite: [SegnaleApri]`
+>* `da: Aperto, a: Aperto, condizioni: {Pulsante: 0}`
+>* `da: Aperto, a: Chiuso, condizioni: {Pulsante: 1}, uscite: [SegnaleBlocca]`
 
-
-**Nota**: per negare una condizione si usa `!` davanti al nome. Ad esempio, `condizioni: ["!Fotocellula"]` significa "fai la transizione solo se l'input Fotocellula non è attivo". **Se si usa questa opzione, il nome della condizione dev'essere tra doppi apici**.
 
 >Se non può essere eseguita nessuna transizione, il sistema non emette alcun errore, ma rimane nello stesso stato finchè può avvenire una transizione.
 
@@ -199,24 +197,24 @@ transizioni:
         da: Chiuso
         a: Chiuso
         condizioni:
-            - "!Moneta"
+            Moneta: 0
     -
         da: Chiuso
         a: Aperto
         condizioni:
-            - Moneta
+            Moneta: 1
         uscite:
             - SegnaleApri
     -
         da: Aperto
         a: Aperto
         condizioni:
-            - "!Moneta"
+            Moneta: 0
     -
         da: Aperto
         a: Chiuso
         condizioni:
-            - Pulsante
+            Pulsante: 1
         uscite:
             - SegnaleChiudi
 >```
@@ -259,7 +257,7 @@ uscite:
 da: Chiuso
 a: Aperto
 condizioni:
-    - Moneta
+    Moneta: 1
 uscite:
     - SegnaleApri
 codice: hello
@@ -405,7 +403,7 @@ L'utente descrive una macchina a stati con un file YAML. Il formato è definito 
     * La chiave `transizioni` è un array di oggetti, ciascuno corrispondente a una transizione. Di ciascun oggetto:
         * La chiave `da` è una stringa con il nome dello stato iniziale.
         * La chiave `a` è una stringa con il nome dello stato finale.
-        * La chiave `condizioni` è un array di stringhe, ciascuna corrispondente al nome di un input. Se la condizione dev'essere negata, la stringa inizia per `!`.
+        * La chiave `condizioni` è un oggetto, dove le chiavi sono il nome degli input, e i valori sono i valori attesi dell'input.
         * La chiave `codice` è opzionale, ed è una stringa con il nome della funzione da chiamare quando viene eseguita la transizione.
 
 Per la grammatica YAML e le definizioni di *oggetto* e *array* si rimanda alla relativa specifica tecnica su http://yaml.org. Si riportano alcuni esempi per brevità.
