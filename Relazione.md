@@ -179,9 +179,9 @@ Finalmente, definiamo l'elemento più importante, le transizioni della macchina 
 >In modo sistematico, possiamo descrivere le transizioni in questo modo:
 
 >* `da: Chiuso, a: Chiuso, condizioni: {Moneta: 0}`
->* `da: Chiuso, a: Aperto, condizioni: {Moneta: 1}, uscite: [SegnaleApri]`
+>* `da: Chiuso, a: Aperto, condizioni: {Moneta: 1}, uscite: {SegnaleApri: 1}`
 >* `da: Aperto, a: Aperto, condizioni: {Pulsante: 0}`
->* `da: Aperto, a: Chiuso, condizioni: {Pulsante: 1}, uscite: [SegnaleBlocca]`
+>* `da: Aperto, a: Chiuso, condizioni: {Pulsante: 1}, uscite: {SegnaleBlocca: 1}`
 
 
 >Se non può essere eseguita nessuna transizione, il sistema non emette alcun errore, ma rimane nello stesso stato finchè può avvenire una transizione.
@@ -204,7 +204,7 @@ transizioni:
         condizioni:
             Moneta: 1
         uscite:
-            - SegnaleApri
+            SegnaleApri: 1
     -
         da: Aperto
         a: Aperto
@@ -216,7 +216,7 @@ transizioni:
         condizioni:
             Pulsante: 1
         uscite:
-            - SegnaleChiudi
+            SegnaleChiudi: 1
 >```
 
 #### Hook
@@ -247,9 +247,9 @@ void funzione(const io_t inputs, io_t outputs)
 da: Chiuso
 a: Aperto
 condizioni:
-    - Moneta
+    Moneta: 1
 uscite:
-    - SegnaleApri
+    SegnaleApri: 1
 #...
 >```
 >in
@@ -259,7 +259,7 @@ a: Aperto
 condizioni:
     Moneta: 1
 uscite:
-    - SegnaleApri
+    SegnaleApri: 1
 codice: hello
 #...
 >```
