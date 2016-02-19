@@ -9,8 +9,8 @@ if (!dati["input iniziali"])
 
 stringa = {};
 
-require("./util");
-require("./hooks.js");
+require("./librerie/util");
+require("./librerie/hooks");
 
 stringa.NUM_MACCHINE = dati.macchine.length;
 
@@ -19,10 +19,10 @@ stringa.FSM_ID = dati.macchine
 	.flatten()
 	.toString();
 
-require("./stati");
-require("./bus");
-require("./port");
-require("./antirimbalzo");
+require("./librerie/stati");
+require("./librerie/bus");
+require("./librerie/port");
+require("./librerie/antirimbalzo");
 
 stringa.NUM_TRANSIZIONI = dati.transizioni.length;
 
