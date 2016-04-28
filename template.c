@@ -1,12 +1,12 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define BIT(n)          (1 << n)
-#define NTH_BIT(x, n)   ((BIT(n) & x) >> n)
-
 #define NUM_MACCHINE    (/*NUM_MACCHINE*/)
 #define NUM_TRANSIZIONI (/*NUM_TRANSIZIONI*/)
 #define NUM_INGRESSI    (/*NUM_INGRESSI*/)
+
+#define SOGLIA_BASSA (/*SOGLIA_BASSA*/)
+#define SOGLIA_ALTA  (/*SOGLIA_ALTA*/)
 
 #define BUS_ENABLED /*BUS_ENABLED*/ // Esistono variabili sul bus?
 #define DEBOUNCE_ENABLED /*DEBOUNCE_ENABLED*/ // Esiste almeno un dispositivo per cui il debounce è abilitato?
@@ -147,7 +147,7 @@ int main() {
 					count--;
 
 				// Trigger di Schmitt
-				if ((ingresso && count < /*SOGLIA_BASSA*/) || (!ingresso && count > /*SOGLIA_ALTA*/))
+				if ((ingresso && count < SOGLIA_BASSA) || (!ingresso && count > SOGLIA_ALTA))
 					inputs ^= BIT(i); // Toggle
 			}
 		}
