@@ -92,27 +92,27 @@ int main() {
 	raw_inputs = inputs = /*INPUT_INIZIALI*/;
 
 	#if BUS_ENABLED
-		printf("Bus abilitato.\n");
+		#pragma message "Bus abilitato."
 	#else
-		printf("Bus disabilitato.\n");
+		#pragma message "Bus disabilitato."
 	#endif
 
 	#if DEBOUNCE_ENABLED
-		printf("Debounce abilitato.\n");
+		#pragma message "Debounce abilitato."
 	#else
-		printf("Debounce disabilitato.\n");
+		#pragma message "Debounce disabilitato."
 	#endif
 
 	#if MULTIPLE_FSMS
-		printf("Modalita' FSM multiple.\n");
+		#pragma message "Modalita' FSM multiple."
 	#else
-		printf("Modalita' FSM singola.\n");
+		#pragma message "Modalita' FSM singola."
 	#endif
 
 	#if HOOKS_ENABLED
-		printf("Hook abilitati.\n");
+		#pragma message "Hook abilitati."
 	#else
-		printf("Hook disabilitati.\n");
+		#pragma message "Hook disabilitati."
 	#endif
 
 // Il loop inizia da qua
