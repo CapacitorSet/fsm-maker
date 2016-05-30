@@ -1,5 +1,8 @@
 Transpiler YAML &rarr; C per macchine a stati finiti
 ===
+
+# Questo documento non è aggiornato.
+
 # Abstract
 Questo documento ha l'obiettivo di descrivere il transpiler da YAML a C per macchine a stati "fsm-maker". Se ne descrive l'utilizzo e l'implementazione.
 

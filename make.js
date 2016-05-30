@@ -1,6 +1,5 @@
 fs = require("fs");
 dati = require("js-yaml").load(fs.readFileSync("fsm.yaml", "utf8"));
-template = fs.readFileSync("template.c", "utf8");
 
 dati.io = dati["i/o"]; // Piu' comodo da scrivere
 
@@ -30,10 +29,4 @@ console.log(stringa);
 
 console.log("Mappa stati:", IDStato);
 
-// Prendi le chiavi, sostituisci /*KEY*/ con value
-var file = Object.keys(stringa).reduce(
-	(t, index) => t.replace("/*" + index + "*/", stringa[index]),
-	template
-);
-
-fs.writeFileSync("fsm.c", file);
+fs.writeFileSync("fsm.json", JSON.stringify(stringa));
