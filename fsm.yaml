@@ -2,123 +2,48 @@ nome: Ascensore
 descrizione: Ascensore a tre piani
 i/o: 
   input: 
-    - Pulsante uno
-    - Pulsante due
-    - Pulsante tre
-    - Finecorsa uno
-    - Finecorsa due
-    - Finecorsa tre
+    - Pulsante sinistro
+    - Pulsante destro
+    - Finecorsa sinistro
+    - Finecorsa destro
   output: 
-    - Lampada
+    - Motore sinistro
+    - Motore destro
   bus: []
+antirimbalzo:
+  porte: []
 input iniziali: 
-  - Finecorsa tre
-  - Pulsante uno
-antirimbalzo: 
-  intervallo: 1
-  schmitt: 
-    basso: 30
-    alto: 250
-  porte: 
-    - Pulsante uno
-    - Pulsante due
-    - Pulsante tre
+  - Finecorsa sinistro
 macchine: 
   - 
     stati: 
-      - due
-      - uno
-      - zero
-      - menouno
-      - menodue
-    stato iniziale: zero
+      - pausaDx
+      - pausaSx
+      - dx
+      - sx
+    stato iniziale: pausaSx
     transizioni: 
       - 
-        da: zero
-        a: uno
+        da: pausaSx
+        a: dx
         condizioni: 
-          Finecorsa uno: 1
-          Pulsante due: 1
-      - 
-        da: zero
-        a: due
-        condizioni: 
-          Finecorsa uno: 1
-          Pulsante tre: 1
-      - 
-        da: zero
-        a: menouno
-        condizioni: 
-          Finecorsa due: 1
-          Pulsante uno: 1
-      - 
-        da: zero
-        a: uno
-        condizioni: 
-          Finecorsa due: 1
-          Pulsante tre: 1
-      - 
-        da: zero
-        a: menodue
-        condizioni: 
-          Finecorsa tre: 1
-          Pulsante uno: 1
-        codice: hello
-      - 
-        da: zero
-        a: menouno
-        condizioni: 
-          Finecorsa tre: 1
-          Pulsante due: 1
-      - 
-        da: due
-        a: uno
-        condizioni: 
-          Finecorsa due: 1
-      - 
-        da: menodue
-        a: menouno
-        condizioni: 
-          Finecorsa due: 1
-      - 
-        da: uno
-        a: zero
-        condizioni: 
-          Finecorsa uno: 1
+          Pulsante sinistro: 1
         uscite:
-          Lampada: 1
+          - Motore destro
       - 
-        da: uno
-        a: zero
+        da: pausaDx
+        a: sx
         condizioni: 
-          Finecorsa due: 1
+          Pulsante destro: 1
         uscite:
-          Lampada: 1
+          - Motore sinistro
       - 
-        da: uno
-        a: zero
+        da: sx
+        a: pausaSx
         condizioni: 
-          Finecorsa tre: 1
-        uscite:
-          Lampada: 1
+          Finecorsa sinistro: 1
       - 
-        da: menouno
-        a: zero
+        da: dx
+        a: pausaDx
         condizioni: 
-          Finecorsa uno: 1
-        uscite:
-          Lampada: 1
-      - 
-        da: menouno
-        a: zero
-        condizioni: 
-          Finecorsa due: 1
-        uscite:
-          Lampada: 1
-      - 
-        da: menouno
-        a: zero
-        condizioni: 
-          Finecorsa tre: 1
-        uscite:
-          Lampada: 1
+          Finecorsa destro: 1
